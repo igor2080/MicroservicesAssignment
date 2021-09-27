@@ -1,5 +1,7 @@
+using Assignment.Client.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Assignment.Web
+namespace Assignment.Client
 {
     public class Startup
     {
@@ -25,12 +27,14 @@ namespace Assignment.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Assignment.Web", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Assignment.Client", Version = "v1" });
             });
+
+            services.AddHttpClient<IPersonService, PersonService>(c =>
+                c.BaseAddress = new Uri(Configuration["ApiConfigs:People:Uri"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,8 +44,10 @@ namespace Assignment.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Assignment.Web v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Assignment.Client v1"));
             }
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
