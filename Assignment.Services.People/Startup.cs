@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Assignment.Services.People
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -33,6 +35,13 @@ namespace Assignment.Services.People
             });
 
             services.AddScoped<IPeopleRepository, PeopleRepository>();
+
+            ConfigurationOptions options = new()
+            {
+                AbortOnConnectFail = false,
+                EndPoints = { "localhost:5000" }
+            };
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(options));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

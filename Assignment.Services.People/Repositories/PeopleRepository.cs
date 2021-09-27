@@ -11,21 +11,14 @@ namespace Assignment.Services.People.Repositories
 {
     public class PeopleRepository : IPeopleRepository
     {
-        private readonly ConnectionMultiplexer _redisConnection;
         private readonly IDatabase _redisDb;
         private const string HashName = "Person";//redis hash
 
-        public PeopleRepository()
+        public PeopleRepository(IConnectionMultiplexer connectionMultiplexer)
         {
-            ConfigurationOptions options = new()
-            {
-                AbortOnConnectFail = false,
-                EndPoints = { "localhost:5000" }
-            };
-
-            _redisConnection = ConnectionMultiplexer.Connect(options);
-            _redisDb = _redisConnection.GetDatabase();
+            _redisDb = connectionMultiplexer.GetDatabase();
         }
+
         public void AddPerson(Person person)
         {
             var json = JsonConvert.SerializeObject(person);

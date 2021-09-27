@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,13 @@ namespace Assignment.Client
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Assignment.Client", Version = "v1" });
             });
+
+            ConfigurationOptions options = new()
+            {
+                AbortOnConnectFail = false,
+                EndPoints = { "localhost:5000" }
+            };
+            services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(options));
 
             services.AddHttpClient<IPersonService, PersonService>(c =>
                 c.BaseAddress = new Uri(Configuration["ApiConfigs:People:Uri"]));
