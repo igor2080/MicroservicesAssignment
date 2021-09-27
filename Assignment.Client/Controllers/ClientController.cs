@@ -1,4 +1,5 @@
 ﻿using Assignment.Client.Models;
+using Assignment.Client.Repositories;
 using Assignment.Client.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,16 +16,25 @@ namespace Assignment.Client.Controllers
     public class ClientController : ControllerBase
     {
         private readonly IPersonService _personService;
+        private readonly IPeopleRepository _peopleRepository;
 
-        public ClientController(IPersonService service)
+        public ClientController(IPersonService service, IPeopleRepository peopleRepository)
         {
             _personService = service;
+            _peopleRepository = peopleRepository;
         }
 
         [HttpGet]
         public async Task Get()
         {
-            await _personService.AddPerson(new Person {PersonId=new Random().Next(2,1001),Age=20,Date=DateTime.Now,Name="Name",Occupation="Job" });
+            //local reads
+            //var result = _peopleRepository.GetAllPeople();
+            //var result = _peopleRepository.GetPersonById(5);
+
+            //====
+
+            //api reads
+            //await _personService.AddPerson(new Person {PersonId=new Random().Next(2,1001),Age=20,Date=DateTime.Now,Name="Name",Occupation="Job" });
             //var result = await _personService.GetPersonById(1);
             //var result = await _personService.RemovePersonById(1);
             //var result = await _personService.GetAll();

@@ -1,3 +1,4 @@
+using Assignment.Client.Repositories;
 using Assignment.Client.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,8 @@ namespace Assignment.Client
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Assignment.Client", Version = "v1" });
             });
+
+            services.AddScoped<IPeopleRepository, PeopleRepository>();
 
             ConfigurationOptions options = new()
             {
